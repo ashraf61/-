@@ -115,7 +115,7 @@
                     const li = document.createElement("li");
                     li.textContent = row.name;
                     signatureList.appendChild(li);
-                }):
+                });
             })
             .catch(error => {
                 signatureList.innerHTML = "<li>تعذر تحميل التواقيع</li>";
