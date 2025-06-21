@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>عريضة طلابية</title>
+    <style>
+        body {
+            font-family: 'Tahoma', sans-serif;
+            background-color: #f9f9f9;
+            padding: 30px;
+            max-width: 800px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .message {
+            background-color: #ffffff;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 30px;
+        }
+        label, input, button {
+            display: block;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #27ae60;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #219150;
+        }
+        .success-message {
+            color: green;
+            margin-top: 10px;
+        }
+        .signatures {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .signatures ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .signatures li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>عريضة طلابية</h1>
+    <div class="message">
+        <p>
+        حضرة رئيس الكلية المحترم،<br><br>
+        في ظل الظروف الأمنية الصعبة التي نمر بها في البلاد بسبب الحرب، نود نحن طلاب الكلية أن نعبر عن قلقنا الكبير وعدم قدرتنا على التركيز أو التفرغ للدراسة بالشكل المطلوب. إن استمرار عقد الامتحانات وتسليم الوظائف في هذه الظروف يضع علينا ضغطًا نفسيًا وعاطفيًا كبيرًا.<br><br>
+        نطالب حضرتكم بالنظر في هذه الأوضاع الطارئة واتخاذ خطوات من شأنها التسهيل علينا، مثل تمديد مواعيد تسليم الوظائف وتأجيل الامتحانات، بما يتماشى مع الواقع الصعب الذي نعيشه جميعًا.<br><br>
+        مع الاحترام،<br>
+        طلاب الكلية.
+        </p>
+    </div>
+
+    <form id="signatureForm">
+        <label for="name">الاسم الكامل:</label>
+        <input type="text" id="name" required>
+        <button type="submit">توقيع</button>
+        <p class="success-message" id="successMessage" style="display: none;">✅ تم تسجيل توقيعك بنجاح</p>
+    </form>
+
+    <div class="signatures">
+        <h3>قائمة الموقعين:</h3>
+        <ul id="signatureList">
+            <li>جاري تحميل التواقيع...</li>
+        </ul>
+    </div>
+
+    <script>
+        const form = document.getElementById('signatureForm');
+        const nameInput = document.getElementById('name');
+        const successMessage = document.getElementById('successMessage');
+        const signatureList = document.getElementById('signatureList');
+
+        // جلب التواقيع من Google Sheets
+        function fetchSignatures() {
+            fetch('https://opensheet.elk.sh/11d4xom7QPFPDSXQw0LGRdirU5mmj6neUHngQoTztYWU/Sheet1')
+            .then(response => response.json())
+            .then(data => {
+                signatureList.innerHTML = "";
+                data.forEach(row => {
+                    const li = document.createElement("li");
+                    li.textContent = row.name;
+                    signatureList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                signatureList.innerHTML = "<li>تعذر تحميل التواقيع</li>";
+                console.error(error);
+            });
+        }
+
+        // إرسال التوقيع
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = nameInput.value.trim();
+            if (name) {
+                fetch("https://script.google.com/macros/s/AKfycbxy1rsEIbhtwmQ1NBujmhuvCYsyVr4pqkZxeZchdSW1ofKPQ6SJL0fcgYX750QewCuC/exec", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: "name=" + encodeURIComponent(name)
+                })
+                .then(response => response.text())
+                .then(result => {
+                    successMessage.style.display = "block";
+                    nameInput.value = '';
+                    fetchSignatures(); // تحديث القائمة بعد التوقيع
+                })
+                .catch(error => {
+                    alert("حدث خطأ أثناء الإرسال. حاول مجددًا.");
+                    console.error(error);
+                });
+            }
+        });
+
+        fetchSignatures();
+    </script>
+
+</body>
+</html>
