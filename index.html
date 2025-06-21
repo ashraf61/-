@@ -130,6 +130,10 @@
             e.preventDefault();
             const name = nameInput.value.trim();
             if (name) {
+                        if (localStorage.getItem("signed") === "true") {
+            alert("لقد وقعت مسبقًا من هذا الجهاز.");
+            return;
+        }
                 fetch("https://script.google.com/macros/s/AKfycbxy1rsEIbhtwmQ1NBujmhuvCYsyVr4pqkZxeZchdSW1ofKPQ6SJL0fcgYX750QewCuC/exec", {
                     method: "POST",
                     headers: {
@@ -141,6 +145,7 @@
                 .then(result => {
                     successMessage.style.display = "block";
                     nameInput.value = '';
+                    localStorage.setItem("signed", "true");
                     fetchSignatures(); // تحديث القائمة بعد التوقيع
                 })
                 .catch(error => {
