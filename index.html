@@ -94,6 +94,7 @@
 
     <div class="signatures">
         <h3>قائمة الموقعين:</h3>
+        <h4 id="count">عدد الموقعين: 0</h4>
         <ul id="signatureList">
             <li>جاري تحميل التواقيع...</li>
         </ul>
@@ -115,6 +116,7 @@
                     const li = document.createElement("li");
                     li.textContent = row.name;
                     signatureList.appendChild(li);
+                    document.getElementById("count").textContent = "عدد الموقعين: " + data.length;
                 });
             })
             .catch(error => {
