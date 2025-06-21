@@ -116,6 +116,7 @@
                     li.textContent = row.name;
                     signatureList.appendChild(li);
                 });
+                document.getElementById("count").textContent = "عدد الموقعين: " + data.length;
             })
             .catch(error => {
                 signatureList.innerHTML = "<li>تعذر تحميل التواقيع</li>";
